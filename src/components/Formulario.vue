@@ -4,10 +4,12 @@
       <!-- Input -->
       <div class="mb-3">
         <label for="idNombre" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="idNombre" v-model="miFormulario.nombre" />
-        <div v-if="!miFormulario.nombre" id="emailHelp" class="form-text text-danger">
+        <input type="text" class="form-control" id="idNombre" v-model.trim="miFormulario.nombre" />
+
+        <div v-if="nombreVacio && !miFormulario.nombre" id="emailHelp" class="form-text text-danger">
           El nombre es requerido.
-        </div>
+        </div> 
+
       </div>
 
       <div class="mb-3">
@@ -68,7 +70,7 @@
       </select>
       <!-- /Select -->
       <br>
-      <button type="submit" class="btn btn-primary" >Submit</button>
+      <button type="submit" class="btn btn-primary" :disabled="bloquear">Submit</button>
     </form>
 
     <br>
@@ -85,7 +87,6 @@
 
 <script>
 export default {
-
   data() {
     return {
       miFormulario: {
@@ -94,15 +95,22 @@ export default {
         categorias: [],
         estado: "",
         pelicula: "rocky"
-      }
+      },
+      nombreVacio: false
     }
   },
   methods: {
     submitFormulario() {
       // lo que enviamos a la base de datos el objeto
       console.log(this.miFormulario);
-     
-   
+
+      if (this.miFormulario.nombre.trim() === "") {
+        console.log("Campo Vacio");
+        this.nombreVacio = true;
+        return
+      }
+      console.log("Campo nombre con información");
+
       // Resetear Formulario
       this.miFormulario = {
         nombre: "",
@@ -115,7 +123,9 @@ export default {
   },
   computed: {
     bloquear() {
+      // return this.miFormulario.nombre.trim() ==="" ? true: false;
       // vamos usar este método para bloquear el botón submit
+      return this.nombreVacio && !this.miFormulario.nombre? true: false
     }
   }
 };
